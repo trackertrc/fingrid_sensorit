@@ -1,7 +1,7 @@
 type: picture-elements
 elements:
   - type: state-label
-    entity: sensor.rajasiirto_keski_ruotsi_2
+    entity: sensor.rajasiirto_keski_ruotsi
     style:
       top: 68%
       left: 10%
@@ -17,7 +17,7 @@ elements:
       color: white
       transform: scale(1,1)
   - type: state-label
-    entity: sensor.rajasiirto_viroon_2
+    entity: sensor.rajasiirto_viroon
     style:
       top: 91%
       left: 50%
@@ -25,7 +25,7 @@ elements:
       color: white
       transform: scale(1,1)
   - type: state-label
-    entity: sensor.rajasiirto_norja_2
+    entity: sensor.rajasiirto_norja
     style:
       top: 0%
       left: 60%
@@ -41,7 +41,7 @@ elements:
       color: white
       transform: scale(1,1)
   - type: state-label
-    entity: sensor.rajasiirto_venaja_2
+    entity: sensor.rajasiirto_venaja
     style:
       top: 80%
       left: 75%
