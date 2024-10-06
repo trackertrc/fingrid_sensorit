@@ -1,0 +1,103 @@
+type: custom:apexcharts-card
+experimental:
+  color_threshold: true
+apex_config:
+  chart:
+    height: 165%
+header:
+  show: true
+  title: Pörssisähkön hinta huomenna
+  show_states: true
+  colorize_states: true
+all_series_config:
+  float_precision: 3
+now:
+  show: true
+  color: cyan
+  label: ""
+graph_span: 23h
+span:
+  start: day
+  offset: +24h
+series:
+  - entity: sensor.shf_electricity_price
+    type: column
+    curve: stepline
+    color: rgb(140, 140, 210)
+    name: Tänään
+    show:
+      in_header: false
+      extremas: true
+      legend_value: false
+    color_threshold:
+      - value: 0
+        color: "#63FD02"
+      - value: 4
+        color: "#378D01"
+      - value: 8
+        color: "#FBFB02"
+      - value: 12
+        color: "#8D8D01"
+      - value: 18
+        color: "#FE7303"
+      - value: 25
+        color: "#8E3F00"
+      - value: 30
+        color: "#F80300"
+      - value: 35
+        color: "#8E0100"
+      - value: 40
+        color: "#9A171A"
+      - value: 45
+        color: "#7B1315"
+    stroke_width: 1
+    data_generator: |
+      return entity.attributes.data.map((d, index) => {
+        return [new Date(d["DateTime"]).getTime(), entity.attributes.data[index]["PriceWithTax"]*100];
+      });
+    yaxis_id: default
+  - entity: sensor.shf_electricity_price_now
+    color: lightgreen
+    name: Huomenna min.
+    unit: c/kWh
+    show:
+      in_header: true
+      in_chart: false
+      legend_value: false
+    yaxis_id: labels
+    data_generator: |
+      return [[, entity.attributes.tomorrow_min*100]];
+  - entity: sensor.shf_electricity_price_now
+    color: red
+    name: Huomenna maks.
+    unit: c/kWh
+    show:
+      in_header: true
+      in_chart: false
+      legend_value: false
+    yaxis_id: labels
+    data_generator: |
+      return [[, entity.attributes.tomorrow_max*100]];
+  - entity: sensor.shf_electricity_price_now
+    color: gray
+    name: Huomenna keskim.
+    unit: c/kWh
+    float_precision: 2
+    show:
+      in_header: true
+      in_chart: false
+      legend_value: false
+    yaxis_id: labels
+    data_generator: |
+      return [[, entity.attributes.tomorrow_avg*100]];
+yaxis:
+  - id: default
+    show: true
+    min: 0
+    max: ~20
+    decimals: 2
+    align_to: 1
+    apex_config:
+      forceNiceScale: true
+  - id: labels
+    show: false
