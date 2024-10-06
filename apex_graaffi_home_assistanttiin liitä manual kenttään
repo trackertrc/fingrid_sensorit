@@ -1,0 +1,52 @@
+type: picture-elements
+elements:
+  - type: state-label
+    entity: sensor.rajasiirto_keski_ruotsi_2
+    style:
+      top: 68%
+      left: 10%
+      background: grey
+      color: white
+      transform: scale(1,1)
+  - type: state-label
+    entity: sensor.fingrid_rajasiirto_ahvenanmaa
+    style:
+      top: 84%
+      left: 0%
+      background: grey
+      color: white
+      transform: scale(1,1)
+  - type: state-label
+    entity: sensor.rajasiirto_viroon_2
+    style:
+      top: 91%
+      left: 50%
+      background: grey
+      color: white
+      transform: scale(1,1)
+  - type: state-label
+    entity: sensor.rajasiirto_norja_2
+    style:
+      top: 0%
+      left: 60%
+      background: grey
+      color: white
+      transform: scale(1,1)
+  - type: state-label
+    entity: sensor.fingrid_rajasiirto_pohjois_ruotsi
+    style:
+      top: 32%
+      left: 20%
+      background: grey
+      color: white
+      transform: scale(1,1)
+  - type: state-label
+    entity: sensor.rajasiirto_venaja_2
+    style:
+      top: 80%
+      left: 75%
+      background: grey
+      color: white
+      transform: scale(1,1)
+image: >
+  https://cdn.fmi.fi/weather-observations/products/finland/frontpage_wx_obs-normal-latest.png?timestamp=0
