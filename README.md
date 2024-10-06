@@ -6,7 +6,7 @@ Tämä on osittain paranneltu versio tästä joka käyttää vanhaa api rajapint
 Kaikki tällähetkellä saatavilla olevat API tiedot fingridiltä lisätty.
 
 Käytössä uusi API data.fingrid.fi
-API keyn voi luoda ilmaiseksi fingridin www sivustolla.
+API keyn voi luoda ilmaiseksi fingridin www sivustolla. 
 
 luo tiedosto secrets.yaml (jos ei ole) lisää sinne kohta:
 fingrid_new_key: omaapikeysi
