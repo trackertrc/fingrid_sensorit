@@ -18,6 +18,8 @@ homeassistant:
 
 lisäksi kopioi fingrid_sensorit.yaml tästä reposta /config kansioon homeassistantissa (sama kansio jossa on configuration.yaml)
 
+Tässä on kuvakaappaus homeassistantista https://github.com/trackertrc/fingrid_sensorit/blob/main/ha_frontend_fingrid.png
+
 Tämä luo Fingridin sähköjärjestelmän sensorit ja kuvaajan.
 
 Bonuksena myös shf sensorit.
