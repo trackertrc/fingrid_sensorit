@@ -32,3 +32,6 @@ homeassistant:
 Tämä luo shf sensorit pörssisähköohjausta varten.
 
 graafiikka malleja repossa.
+
+TÄSTÄ HELPOMPI LUKUISEEN OHJEESEEN TABIT KOHDALLAAN.
+https://raw.githubusercontent.com/trackertrc/fingrid_sensorit/refs/heads/main/README.md
