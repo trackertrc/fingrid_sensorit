@@ -1,0 +1,261 @@
+automation:
+  - id: paivita_fingrid_tuuliennuste # Unique identifier for the automation
+    alias: Päivitä Fingrid tuuliennuste
+    mode: single
+    trigger:
+      - platform: time_pattern
+        minutes: "59" # Trigger every hour
+      - platform: homeassistant
+        event: start # Trigger on Home Assistant startup
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.fingrid_tuuliennuste
+
+sensor:
+  - platform: rest
+    resource_template: https://data.fingrid.fi/api/data?datasets=245
+    name: Fingrid Tuuliennuste
+    unique_id: fingrid_tuuliennuste
+    value_template: "OK" # static value as sensor is not updated regularly
+    headers:
+      x-api-key: !secret fingrid_new_key
+    params:
+      start_time: "{{ (utcnow() - timedelta(days = -1)).strftime('%Y-%m-%dT%H:00:00Z') }}"
+      end_time: "{{ (utcnow() + timedelta(hours = 36)).strftime('%Y-%m-%dT%H:00:00Z') }}"
+      format: "xml"
+      pageSize: 1000
+    json_attributes:
+      - "events"
+    scan_interval: 604800
+
+rest:
+  - resource_template: "https://data.fingrid.fi/api/data?datasets=58,181,183,188,189,191,192,193,194,201,202,205,209,266,186,87,187,180,89,195,90,247,177,206,336,260,194"
+    headers:
+      x-api-key: !secret fingrid_new_key
+    params:
+      format: json
+      locale: en
+      pageSize: 2000
+      startTime: "{{ (utcnow() - timedelta(minutes = 15)).strftime('%Y-%m-%dT%H:%M:%S') }}"
+    scan_interval: 180 # Use a common scan interval (adjust as needed)
+    sensor:
+      - name: "Fingrid Rajasiirto Pohjois-Ruotsi"
+        unique_id: fingrid_rajasiirto_pohjois_ruotsi
+        icon: mdi:transmission-tower
+        value_template: >-
+          {% set item = value_json.data | selectattr("datasetId", "eq", 87) | list | first %}
+          {% if item %}
+            {% if item.value < 0 %}
+              Tuonti {{ item.value | round(0) }} MW →
+            {% else %}
+              ← Vienti {{ item.value | round(0) }} MW
+            {% endif %}
+          {% else %}
+            N/A
+          {% endif %}
+
+      - name: "Fingrid Rajasiirto Ahvenanmaa"
+        unique_id: fingrid_rajasiirto_ahvenenmaa
+        icon: mdi:transmission-tower
+        value_template: >-
+          {% set item = value_json.data | selectattr("datasetId", "eq" , 90) | list | first %}
+          {% if item.value < 0 %}
+            Tuonti {{ item.value | round(0) }} MW →
+          {% else %}
+            ← Vienti {{ item.value | round(0) }} MW
+          {% endif %}
+
+      - name: "Fingrid Rajasiirto Norja"
+        unique_id: fingrid_rajasiirto_norja
+        icon: mdi:transmission-tower
+        value_template: >-
+          {% set item = value_json.data | selectattr("datasetId", "eq" , 187) | list | first %}
+          {% if item.value < 0 %}
+            Tuonti {{ item.value | round(0) }} MW ↓
+          {% else %}
+            Vienti {{ item.value | round(0) }} MW ↑
+          {% endif %}
+
+      - name: "Fingrid Rajasiirto Viroon"
+        unique_id: fingrid_rajasiirto_viroon
+        icon: mdi:transmission-tower
+        value_template: >-
+          {% set item = value_json.data | selectattr("datasetId", "eq", 180) | list | first %}
+          {% if item.value < 0 %}
+            Tuonti {{ item.value | round(0) }} MW →
+          {% else %}
+            ← Vienti {{ item.value | round(0) }} MW
+          {% endif %}
+
+      - name: "Fingrid Rajasiirto Keski-Ruotsi"
+        unique_id: fingrid_rajasiirto_keski_ruotsi
+        icon: mdi:transmission-tower
+        value_template: >-
+          {% set item = value_json.data | selectattr("datasetId", "eq", 89) | list | first %}
+          {% if item.value < 0 %}
+            Tuonti {{ item.value | round(0) }} MW →
+          {% else %}
+            ← Vienti {{ item.value | round(0) }} MW
+          {% endif %}
+
+      - name: "Fingrid Rajasiirto Venäjä"
+        unique_id: fingrid_rajasiirto_venaja
+        icon: mdi:transmission-tower
+        value_template: >-
+          {% set item = value_json.data | selectattr("datasetId", "eq", 195) | list | first %}
+          {% if item.value < 0 %}
+            Tuonti {{ item.value | round(0) }} MW →
+          {% else %}
+            ← Vienti {{ item.value | round(0) }} MW
+          {% endif %}
+
+      - name: "Fingrid Tuulivoima"
+        unique_id: fingrid_tuulivoima
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 181) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Tehoreservi"
+        unique_id: fingrid_tehoreservi
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 183) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Ydinvoima"
+        unique_id: fingrid_ydinvoima
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 188) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      #      - name: "Fingrid Lauhdevoima"
+      #        unique_id: fingrid_lauhdevoima
+      #        value_template: >
+      #          {% set item = value_json.data | selectattr("datasetId", "eq", 189) | list | first %}
+      #          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Vesivoima"
+        unique_id: fingrid_vesivoima
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 191) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Tuotanto Suomessa"
+        unique_id: fingrid_tuotanto_suomessa
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 192) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Kulutus Suomessa"
+        unique_id: fingrid_kulutus_suomessa
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 193) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Nettotuonti/-vienti"
+        unique_id: fingrid_nettotuonti_vienti
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 194) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Kaukolämpö"
+        unique_id: fingrid_kaukolampo
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 201) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Teollisuus"
+        unique_id: fingrid_teollisuus
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 202) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Vara- ja pienvoima"
+        unique_id: fingrid_vara_ja_pienvoima
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 205) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Käyttötilanne"
+        unique_id: fingrid_kayttotilanne
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 209) | list | first %}
+          {% set mapper = {
+            1 : 'Normaali',
+            2 : 'Heikentynyt',
+            3 : 'Vaarassa',
+            4 : 'Vakava häiriö',
+            5 : 'Vakava häiriö (palautus)' } %}
+          {% set state = item["value"] if item else 'Unknown' %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+
+      - name: "Fingrid Päästöt"
+        unique_id: fingrid_paastot
+        unit_of_measurement: "gCO2/kWh"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 266) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Tuotanto yli/alijäämä"
+        unique_id: fingrid_tuotanto_ylialijaama
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 186) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      #      - name: "Fingrid Aurinkovoima"
+      #        unique_id: fingrid_aurinkovoima
+      #        unit_of_measurement: "MW"
+      #        value_template: >
+      #          {% set item = value_json.data | selectattr("datasetId", "eq", 247) | list | first %}
+      #          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Taajuus"
+        unique_id: fingrid_taajuus
+        unit_of_measurement: "Hz"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 177) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Aikapoikkeama"
+        unique_id: fingrid_aikapoikkeama
+        unit_of_measurement: "s"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 206) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Sähköpula tilannetieto"
+        unique_id: fingrid_sahkopula_tilannetieto
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 336) | list | first %}
+          {% set mapper = {
+            0 : 'Normaali käyttötilanne',
+            1 : 'Sähköpula mahdollinen',
+            2 : 'Sähköpulan riski suuri',
+            3 : 'Sähköpula' } %}
+          {% set state = item["value"] if item else 'Unknown' %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+
+      - name: "Fingrid liike-energia"
+        unique_id: fingrid_liike_energia
+        unit_of_measurement: "GW/s"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 260) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
+
+      - name: "Fingrid Suomen nettotuonti/-vienti"
+        unique_id: fingrid_suomen_nettotuonti_vienti
+        unit_of_measurement: "MW"
+        value_template: >
+          {% set item = value_json.data | selectattr("datasetId", "eq", 194) | list | first %}
+          {{ item["value"] if item else 'N/A' }}
