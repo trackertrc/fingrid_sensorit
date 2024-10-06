@@ -1,0 +1,87 @@
+type: vertical-stack
+cards:
+  - type: entities
+    entities:
+      - entity: input_select.shf_control_function
+      - entity: input_number.shf_control_function_factor
+      - entity: sensor.shf_control_factor_1
+      - entity: sensor.shf_control_factor_0_1
+  - type: custom:apexcharts-card
+    experimental:
+      color_threshold: true
+    now:
+      show: true
+      color: "#ff0000"
+    apex_config:
+      forceNiceScale: true
+      chart:
+        height: 165%
+    yaxis:
+      - id: pyynti
+        show: true
+        decimals: 2
+        align_to: 1
+        apex_config:
+          tickAmount: 4
+          seriesName: pyynti
+      - id: hinta
+        show: true
+        opposite: true
+        min: 0
+        max: ~25
+        decimals: 2
+        align_to: 1
+        apex_config:
+          tickAmount: 4
+    show:
+      last_updated: false
+    header:
+      standard_format: false
+      show: true
+      show_states: true
+      colorize_states: true
+      title: Ohjaus vs. pörssisähkö.
+    span:
+      start: day
+      offset: +0h
+    update_delay: 2s
+    series:
+      - entity: sensor.shf_electricity_price
+        yaxis_id: hinta
+        name: Pörssisähkö c/kWh
+        extend_to: now
+        type: area
+        curve: stepline
+        opacity: 0.02
+        group_by:
+          func: last
+          duration: 60m
+        stroke_width: 1
+        data_generator: |
+          return entity.attributes.data.map((d, index) => {
+            return [new Date(d["DateTime"]).getTime(), d["PriceWithTax"]*100];
+          });
+        show:
+          header_color_threshold: true
+          legend_value: false
+          in_header: false
+          name_in_header: false
+          extremas: true
+      - entity: sensor.shf_control_factor_0_1
+        yaxis_id: pyynti
+        name: Ohjaus
+        unit: C
+        type: area
+        curve: stepline
+        opacity: 0.02
+        stroke_width: 1
+        data_generator: |
+          return entity.attributes.today_values.map((d, index) => {
+            return [start.getTime()+index*3600000, d];
+          });
+        show:
+          header_color_threshold: true
+          legend_value: false
+          in_header: false
+          name_in_header: false
+          extremas: true
