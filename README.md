@@ -32,6 +32,3 @@ homeassistant:
 Tämä luo shf sensorit pörssisähköohjausta varten.
 
 graafiikka malleja repossa.
-
-
-gr
