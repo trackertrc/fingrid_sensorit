@@ -1,0 +1,157 @@
+type: custom:apexcharts-card
+graph_span: 48h
+experimental:
+  color_threshold: true
+show:
+  last_updated: true
+header:
+  title: Sähkön hinta ja tuulivoima
+  show: true
+  show_states: true
+  colorize_states: true
+span:
+  start: day
+yaxis:
+  - id: price
+    min: 0
+    decimals: 2
+    apex_config:
+      tickAmount: 2
+      forceNiceScale: true
+  - id: windpower
+    apex_config:
+      tickAmount: 1
+      forceNiceScale: true
+  - id: wind
+    opposite: true
+    min: 0
+    max: 4000
+    decimals: 1
+    apex_config:
+      tickAmount: 1
+      forceNiceScale: true
+now:
+  show: true
+  label: Nyt
+series:
+  - entity: sensor.shf_electricity_price_now
+    name: Average Price
+    unit: c/kWh
+    yaxis_id: price
+    show:
+      in_header: false
+      extremas: false
+    type: line
+    color: blue
+    float_precision: 2
+    stroke_width: 2
+    data_generator: >
+      return [[start, entity.attributes.today_avg*100], [moment(end).subtract(1,
+      'days'), entity.attributes.today_avg*100], []];
+  - entity: sensor.shf_electricity_price_now
+    show:
+      in_header: false
+      extremas: true
+      legend_value: false
+    type: column
+    color: lightgray
+    yaxis_id: price
+    float_precision: 2
+    unit: c/kWh
+    data_generator: |
+      return entity.attributes.data.map((d, index) => {
+        return [d["Timestamp"]*1000, d["TotalPrice"]*100];
+      });
+    color_threshold:
+      - value: 0
+        color: 368f39
+      - value: 10
+        color: a3b34d
+      - value: 20
+        color: ffd57e
+      - value: 30
+        color: f18c56
+      - value: 40
+        color: de425b
+  - entity: sensor.shf_electricity_price_now
+    name: Pörssisähkö
+    show:
+      in_header: true
+      header_color_threshold: true
+      in_chart: false
+    type: line
+    color: lightgray
+    float_precision: 2
+    stroke_width: 0
+    transform: return x*100
+    unit: c/kWh
+    color_threshold:
+      - value: 0
+        color: 368f39
+      - value: 10
+        color: a3b34d
+      - value: 20
+        color: ffd57e
+      - value: 30
+        color: f18c56
+      - value: 40
+        color: de425b
+  - entity: sensor.fingrid_tuuliennuste
+    yaxis_id: wind
+    name: Tuulivoima
+    extend_to: now
+    type: area
+    curve: stepline
+    group_by:
+      func: last
+      duration: 60m
+    stroke_width: 1
+    data_generator: |
+      return entity.attributes.events.event.map((d, index) => {
+        return [new Date(d["startTime"]).getTime(), entity.attributes.events.event[index]["value"]*1];
+      });
+    show:
+      header_color_threshold: true
+      legend_value: false
+      in_header: false
+      name_in_header: false
+      extremas: true
+  - entity: sensor.shf_electricity_price_now
+    color: gray
+    name: Keskihinta
+    unit: c/kWh
+    float_precision: 2
+    show:
+      in_header: true
+      in_chart: false
+      legend_value: false
+    yaxis_id: windpower
+    data_generator: |
+      return [[, entity.attributes.today_avg*100]];
+  - entity: sensor.shf_electricity_price_now
+    color: red
+    name: Maksimi hinta
+    unit: c/kWh
+    float_precision: 2
+    show:
+      in_header: true
+      in_chart: false
+      legend_value: false
+    yaxis_id: windpower
+    data_generator: |
+      return [[, entity.attributes.today_max*100]];
+  - entity: sensor.fingrid_tuulivoima
+    yaxis_id: windpower
+    name: Tuulivoima
+    unit: kWh
+    group_by:
+      func: last
+      duration: 60m
+    stroke_width: 1
+    show:
+      header_color_threshold: false
+      legend_value: true
+      in_header: true
+      name_in_header: true
+      extremas: false
+      in_chart: false
