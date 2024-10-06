@@ -1,0 +1,25 @@
+type: entities
+entities:
+  - input_number.shf_price_avg_slider
+  - input_number.shf_control_factor
+  - input_select.shf_control_function
+  - input_number.shf_control_function_factor
+  - input_number.shf_price_slider
+  - input_number.shf_rank_slider
+  - input_number.shf_price1_slider
+  - input_number.shf_price2_slider
+  - input_datetime.shf_price2_start
+  - input_datetime.shf_price2_stop
+  - automation.shf_validate_price_modifiers
+  - sensor.shf_average_price_7_days
+  - sensor.shf_average_price_next_hours
+  - sensor.shf_average_price_today
+  - sensor.shf_control_factor_1
+  - sensor.shf_control_factor_0_1
+  - sensor.shf_data
+  - sensor.shf_electricity_price
+  - sensor.shf_electricity_price_now
+  - binary_sensor.shf_price_acceptable
+  - binary_sensor.shf_price_or_rank_acceptable
+  - binary_sensor.shf_rank_acceptable
+  - sensor.shf_rank_now
