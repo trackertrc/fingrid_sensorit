@@ -163,13 +163,6 @@ rest:
           {% set item = value_json.data | selectattr("datasetId", "eq", 193) | list | first %}
           {{ item["value"] if item else 'N/A' }}
 
-      - name: "Fingrid Nettotuonti/-vienti"
-        unique_id: fingrid_nettotuonti_vienti
-        unit_of_measurement: "MW"
-        value_template: >
-          {% set item = value_json.data | selectattr("datasetId", "eq", 194) | list | first %}
-          {{ item["value"] if item else 'N/A' }}
-
       - name: "Fingrid Kaukolämpö"
         unique_id: fingrid_kaukolampo
         unit_of_measurement: "MW"
