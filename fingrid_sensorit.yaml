@@ -1,5 +1,5 @@
 automation:
-  - id: paivita_fingrid_tuuliennuste # Unique identifier for the automation
+  - id: paivita_fingrid_tuuliennuste
     alias: Päivitä Fingrid tuuliennuste
     mode: single
     trigger:
@@ -8,7 +8,7 @@ automation:
       - trigger: time
         at: "00:00:01"
       - platform: homeassistant
-        event: start # Trigger on Home Assistant startup
+        event: start 
     condition:
       - condition: template
         value_template: "{{ state_attr('sensor.fingrid_tuuliennuste', 'attribution') is none }}"
@@ -115,7 +115,7 @@ rest:
             ← Vienti {{ item.value | round(0) }} MW
           {% endif %}
 
-      - name: "Fingrid Tuulivoima"
+      - name: "Fingrid Tuulivoima tuotanto"
         unique_id: fingrid_tuulivoima
         unit_of_measurement: "MW"
         value_template: >
@@ -163,14 +163,14 @@ rest:
           {% set item = value_json.data | selectattr("datasetId", "eq", 193) | list | first %}
           {{ item["value"] if item else 'N/A' }}
 
-      - name: "Fingrid Kaukolämpö"
+      - name: "Fingrid Yhteistuotanto (Kaukolämpö)"
         unique_id: fingrid_kaukolampo
         unit_of_measurement: "MW"
         value_template: >
           {% set item = value_json.data | selectattr("datasetId", "eq", 201) | list | first %}
           {{ item["value"] if item else 'N/A' }}
 
-      - name: "Fingrid Teollisuus"
+      - name: "Fingrid Yhteistuotanto (Teollisuus)"
         unique_id: fingrid_teollisuus
         unit_of_measurement: "MW"
         value_template: >
